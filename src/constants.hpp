@@ -5,6 +5,12 @@
 
 namespace chip8::constants{
 
+    const std::size_t pixelSize = 10;
+    const std::size_t emulatorDisplayWidth = 64;
+    const std::size_t emulatorDisplayHeight = 32;
+    const std::size_t windowDisplayWidth = pixelSize * emulatorDisplayWidth;
+    const std::size_t windowDisplayHeight = pixelSize * emulatorDisplayHeight;
+
     const std::size_t memSize = 4096;
     const std::size_t stackAddressSize = 16;
 

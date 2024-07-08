@@ -10,12 +10,12 @@
 class chip8Context{
 
     public:
-        static std::array<std::uint8_t, chip8::constants::memSize> memory;
-        static std::stack<std::uint16_t> stack;
-        static chip8::registers registers;
+        std::array<std::uint8_t, chip8::constants::memSize> memory;
+        std::stack<std::uint16_t> stack;
+        chip8::registers registers;
 
-    chip8Context();
-    ~chip8Context();
+        chip8Context();
+        ~chip8Context();
     
 };
 
