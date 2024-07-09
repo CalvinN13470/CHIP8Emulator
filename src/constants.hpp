@@ -20,6 +20,10 @@ namespace chip8::constants{
 
     const std::size_t delayTimerSize = 8;
     const std::size_t soundTimerSize = 8;
+    
+    // 1/60th of a second in nanoseconds
+    const std::size_t cycleLength = 16666666;
+    const std::size_t maxDeltaTime = 50000000;
 
     //Location in memory to add font data
     const std::size_t fontDataEntryIndex = 80;

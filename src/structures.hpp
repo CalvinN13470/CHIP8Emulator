@@ -3,6 +3,7 @@
 
 #include "headers.hpp"
 #include "constants.hpp"
+#include "chip8Timer.hpp"
 
 namespace chip8{
 
@@ -13,8 +14,8 @@ namespace chip8{
         uint16_t pc;
         uint16_t index;
 
-        uint8_t delayTimer;
-        uint8_t soundTimer;
+        chip8Timer delayTimer;
+        chip8Timer soundTimer;
 
     };
 
