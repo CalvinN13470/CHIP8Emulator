@@ -1,4 +1,4 @@
-#include "chip8Display.hpp"
+#include "chip8display.hpp"
 
 chip8Display::chip8Display(){
 

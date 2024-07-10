@@ -1,4 +1,4 @@
-#include "chip8Context.hpp"
+#include "chip8context.hpp"
 
 chip8Context::chip8Context(){
 
@@ -10,6 +10,4 @@ chip8Context::chip8Context(){
 
 }
 
-chip8Context::~chip8Context(){
-    
-}
+chip8Context::~chip8Context() = default;

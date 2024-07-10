@@ -3,7 +3,7 @@
 
 #include "headers.hpp"
 #include "constants.hpp"
-#include "chip8Timer.hpp"
+#include "chip8timer.hpp"
 
 namespace chip8{
 

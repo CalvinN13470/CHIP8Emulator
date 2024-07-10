@@ -6,6 +6,7 @@
 #include <chrono>
 #include <cstdint>
 #include <iostream>
+#include <SDL2/SDL.h>
 #include <stack>
 
 #endif

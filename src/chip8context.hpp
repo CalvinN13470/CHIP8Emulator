@@ -5,7 +5,7 @@
 #include "constants.hpp"
 #include "structures.hpp"
 
-#include "chip8Font.hpp"
+#include "chip8font.hpp"
 
 class chip8Context{
 

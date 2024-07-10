@@ -1,4 +1,4 @@
-#include "chip8Timer.hpp"
+#include "chip8timer.hpp"
 
 chip8Timer::chip8Timer(){
 
@@ -45,6 +45,4 @@ bool chip8Timer::isZero(){
     return (timer == 0);
 }
 
-chip8Timer::~chip8Timer(){
-
-}
+chip8Timer::~chip8Timer() = default;

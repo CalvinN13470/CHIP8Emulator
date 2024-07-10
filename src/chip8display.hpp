@@ -1,8 +1,6 @@
 #ifndef DISPLAY_HPP
 #define DISPLAY_HPP
 
-#include <SDL2/SDL.h>
-
 #include "constants.hpp"
 #include "headers.hpp"
 
