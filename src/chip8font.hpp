@@ -6,9 +6,9 @@
 
 namespace chip8::font{
 
-    const std::size_t fontDataSize = 80;
+    const std::size_t FONT_DATA_SIZE = 80;
 
-    const std::array<std::uint8_t, fontDataSize> data = {
+    const std::array<std::uint8_t, FONT_DATA_SIZE> data = {
         0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
 		0x20, 0x60, 0x20, 0x20, 0x70, // 1
 		0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2

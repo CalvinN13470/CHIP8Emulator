@@ -1,26 +1,28 @@
 #include "chip8timer.hpp"
 
-chip8Timer::chip8Timer(){
+chip8Timer::chip8Timer(size_t max, size_t length){
 
     timer = 0;
     deltaTime = 0;
     accumulator = 0;
     
+    maxDelta = max;
+    cycleLength = length;
+
     lastTime = steady_clock::now();
     currentTime = steady_clock::now();
 
-
 }
 
-void chip8Timer::step(){
-
+int chip8Timer::step(){
+    
+    bool step = false;
     currentTime = steady_clock::now();
-
     deltaTime = duration_cast<nanoseconds>(currentTime - lastTime).count();
 
     //prevents large amounts of steps when program pauses
-    if (deltaTime > maxDeltaTime)
-        deltaTime = maxDeltaTime;
+    if (deltaTime > maxDelta)
+        deltaTime = maxDelta;
     
     lastTime = currentTime;
     accumulator += deltaTime;
@@ -29,7 +31,10 @@ void chip8Timer::step(){
         if (timer > 0)
             timer -= 1;
         accumulator -= cycleLength;
+        step = true;
     }
+
+    return step;
 
 }
 

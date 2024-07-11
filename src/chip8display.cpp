@@ -2,7 +2,7 @@
 
 chip8Display::chip8Display(){
 
-    window = SDL_CreateWindow("Calvin's CHIP8 Emulator", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowDisplayWidth, windowDisplayHeight, 0);
+    window = SDL_CreateWindow("Calvin's CHIP8 Emulator", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_DISPLAY_WIDTH, WINDOW_DISPLAY_HEIGHT, 0);
     if (window == nullptr)
         std::cerr << "Unable to create Window. SDL Error: " << SDL_GetError() << std::endl;
     
@@ -14,7 +14,7 @@ chip8Display::chip8Display(){
     
 }
 
-void chip8Display::render(const std::array<bool, emulatorDisplayWidth * emulatorDisplayHeight> screenBuffer){
+void chip8Display::render(const std::array<bool, EMULATOR_DISPLAY_WIDTH * EMUlATOR_DISPLAY_HEIGHT> screenBuffer){
 
     //clear screen
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -22,13 +22,13 @@ void chip8Display::render(const std::array<bool, emulatorDisplayWidth * emulator
 
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
-    for (int i = 0 ; i < emulatorDisplayWidth * emulatorDisplayHeight ; i++){
+    for (int i = 0 ; i < EMULATOR_DISPLAY_WIDTH * EMUlATOR_DISPLAY_HEIGHT ; i++){
 
         if (screenBuffer[i] != false){
 
-            int x = (i % emulatorDisplayWidth) * pixelSize;
-            int y = (i / emulatorDisplayWidth) * pixelSize;
-            SDL_Rect pixelRect = {x, y, pixelSize, pixelSize};
+            int x = (i % EMULATOR_DISPLAY_WIDTH) * PIXEL_SIZE;
+            int y = (i / EMUlATOR_DISPLAY_HEIGHT) * PIXEL_SIZE;
+            SDL_Rect pixelRect = {x, y, PIXEL_SIZE, PIXEL_SIZE};
             SDL_RenderFillRect(renderer, &pixelRect);
 
         }

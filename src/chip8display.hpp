@@ -14,7 +14,7 @@ class chip8Display{
 
     public:
         chip8Display();
-        void render(std::array<bool, emulatorDisplayWidth * emulatorDisplayHeight> screenBuffer);
+        void render(std::array<bool, EMULATOR_DISPLAY_WIDTH * EMUlATOR_DISPLAY_HEIGHT> screenBuffer);
         ~chip8Display();
 };
 

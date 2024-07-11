@@ -2,20 +2,17 @@
 #define STRUCT_HPP
 
 #include "headers.hpp"
-#include "constants.hpp"
-#include "chip8timer.hpp"
 
 namespace chip8{
 
-    struct registers{
+    struct instructValues{
 
-        std::array<uint8_t, constants::varRegisterCount> varRegister;
-
-        uint16_t pc;
-        uint16_t index;
-
-        chip8Timer delayTimer;
-        chip8Timer soundTimer;
+        int action = 0;
+        int X = 0;
+        int Y = 0;
+        int N = 0;
+        int NN = 0;
+        int NNN = 0;
 
     };
 
