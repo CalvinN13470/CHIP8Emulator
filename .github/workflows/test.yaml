@@ -1,5 +1,9 @@
 name: test workflow
 
+defaults:
+  run:
+    shell: bash
+
 on:
   push: 
     branches:
@@ -10,19 +14,20 @@ on:
   workflow_dispatch:
 
 jobs:
-  hello:
-     runs-on: ubuntu-latest
-     steps:
-      - uses: actions/checkout@v4
-      - name: hello world
-        run: echo "Hello world"
-        shell: bash
-
-  goodbye:
+  test workflow:
     runs-on: ubuntu-latest
     steps:
-      - name: goodbye world
-        run: echo "Goodbye world"
-        shell: bash
-      
-  
+    - name: checkout
+    - uses: actions/checkout@v4
+
+    - name: clone google test
+      run: git clone https://github.com/google/googletest.git
+
+    - name: cmake
+      run: cmake CMakeLists.txt
+    
+    - name: make
+      run: make
+
+    - name: run tests
+      run: ./chip8tests/chip8tests
