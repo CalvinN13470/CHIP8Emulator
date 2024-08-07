@@ -1,4 +1,4 @@
-name: test workflow
+name: chip8 workflow
 
 defaults:
   run:
@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  test_workflow:
+  chip8_workflow:
     runs-on: ubuntu-latest
     steps:
     - name: checkout
