@@ -22,6 +22,7 @@ set(Headers
     src/interpreter.hpp
     src/structures.hpp
     src/exceptions/null_display_exception.hpp
+    src/exceptions/invalid_timer_value_exception.hpp
 )
 
 set(Sources
@@ -31,6 +32,7 @@ set(Sources
     src/chip8timer.cpp
     src/interpreter.cpp
     src/exceptions/null_display_exception.cpp
+    src/exceptions/invalid_timer_value_exception.cpp
 )
 
 add_library(${This} STATIC ${Sources} ${Headers})

@@ -3,6 +3,7 @@
 
 #include "headers.hpp"
 #include "constants.hpp"
+#include "exceptions/invalid_timer_value_exception.hpp"
 
 using namespace std::chrono;
 using namespace chip8::constants;
@@ -19,11 +20,11 @@ class chip8Timer{
         steady_clock::time_point currentTime;
         
     public:
-        //disableTimerCount removes the neccessity to add time
-        chip8Timer(size_t max, size_t length);
+        chip8Timer(size_t delta, size_t cycle);
         int step();
-        void addTime(const uint8_t addedTime);
-        uint8_t getTime();
+        bool addTime(const uint16_t addedTime);
+        uint8_t getTimeHex();
+        int getTimeInt();
         bool isZero();
         ~chip8Timer();
 };

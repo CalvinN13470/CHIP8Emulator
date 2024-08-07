@@ -1,13 +1,13 @@
 #include "chip8timer.hpp"
 
-chip8Timer::chip8Timer(size_t max, size_t length){
+chip8Timer::chip8Timer(size_t delta, size_t cycle){
 
     timer = 0;
     deltaTime = 0;
     accumulator = 0;
     
-    maxDelta = max;
-    cycleLength = length;
+    maxDelta = delta;
+    cycleLength = cycle;
 
     lastTime = steady_clock::now();
     currentTime = steady_clock::now();
@@ -38,12 +38,22 @@ int chip8Timer::step(){
 
 }
 
-void chip8Timer::addTime(const uint8_t addedTime){
+bool chip8Timer::addTime(const uint16_t addedTime){
+    if ((uint16_t)timer + addedTime > 0x00FF){
+        throw InvalidTimerValueException();
+        return false;
+    }
+
     timer += addedTime;
+    return true;
 }
 
-uint8_t chip8Timer::getTime(){
+uint8_t chip8Timer::getTimeHex(){
     return timer;
+}
+
+int chip8Timer::getTimeInt(){
+    return (int) timer;
 }
 
 bool chip8Timer::isZero(){

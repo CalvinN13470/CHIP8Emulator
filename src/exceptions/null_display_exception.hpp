@@ -1,5 +1,5 @@
-#ifndef EXCEPTION_HPP
-#define EXCEPTION_HPP
+#ifndef NULL_DISPLAY_EXCEPTION_HPP
+#define NULL_DISPLAY_EXCEPTION_HPP
 
 #include "../headers.hpp"
 

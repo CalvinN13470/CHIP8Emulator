@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.28)
 set(This chip8tests)
 
 set(Sources
-    font_data_entry_test.cpp
+    timer_test.cpp
 )
 
 add_executable(${This} ${Sources})
