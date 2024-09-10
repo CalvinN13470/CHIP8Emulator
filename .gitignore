@@ -6,6 +6,7 @@
 /CMakeFiles
 /googletest
 /lib
+/src/chip8exec
 /src/output
 /src/*.o
 /Testing

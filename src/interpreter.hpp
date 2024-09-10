@@ -21,6 +21,7 @@ class interpreter{
         uint16_t fetch();
         instructValues decode(uint16_t instr);
         void execute(instructValues decodedInstr);
+        void draw(int x, int y, int h);
     
     public:
         interpreter();

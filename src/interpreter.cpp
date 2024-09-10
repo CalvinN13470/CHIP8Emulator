@@ -21,23 +21,58 @@ uint16_t interpreter::fetch(){
 
 }
 
-instructValues decode(uint16_t instr){
+instructValues interpreter::decode(uint16_t instr){
 
     instructValues decodedInstr;
 
-    decodedInstr.action = int((uint8_t)(instr >> 12));
+    decodedInstr.action = instr >> 12;
     
     decodedInstr.X = int((instr & 0x0F00) >> 8);
     decodedInstr.Y = int((instr & 0x00F0) >> 4);
-    decodedInstr.N = int(instr & 0x000F);
-    decodedInstr.NN = int(instr & 0x00FF);
-    decodedInstr.NNN = int(instr & 0x0FFF);
+    decodedInstr.N = instr & 0x000F;
+    decodedInstr.NN = instr & 0x00FF;
+    decodedInstr.NNN = instr & 0x0FFF;
 
     return decodedInstr;
 
 }
 
-void execute(instructValues decodedInstr){
+void interpreter::execute(instructValues decodedInstr){
+    
+    switch(decodedInstr.action){
+
+        case 0x00:
+            display->clear();
+            break;
+        
+        case 0x01:
+            context->pc = decodedInstr.NNN;
+            break;
+        
+        case 0x06:
+            context->varRegisters[decodedInstr.X] = decodedInstr.NN;
+            break;
+        
+        case 0x07:
+            context->varRegisters[decodedInstr.X] += decodedInstr.NN;
+            break;
+        
+        case 0x0A:
+            context->index = decodedInstr.NNN;
+            break;
+        
+        case 0x0D:
+            int x = context->varRegisters[decodedInstr.X];
+            int y = context->varRegisters[decodedInstr.Y];
+            int h = int(decodedInstr.N);
+            draw(x, y, h);
+            break;
+
+    }
+
+}
+
+void interpreter::draw(int x, int y, int h){
 
 }
 

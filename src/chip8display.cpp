@@ -11,12 +11,13 @@ chip8Display::chip8Display(){
         if (renderer == nullptr)
             std::cerr << "Unable to create renderer. SDL Error " << SDL_GetError() << std::endl;
     }
+
+    screenBuffer = {};
     
 }
 
-void chip8Display::render(const std::array<bool, EMULATOR_DISPLAY_WIDTH * EMUlATOR_DISPLAY_HEIGHT> screenBuffer){
+void chip8Display::render(){
 
-    //clear screen
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
@@ -27,7 +28,7 @@ void chip8Display::render(const std::array<bool, EMULATOR_DISPLAY_WIDTH * EMUlAT
         if (screenBuffer[i] != false){
 
             int x = (i % EMULATOR_DISPLAY_WIDTH) * PIXEL_SIZE;
-            int y = (i / EMUlATOR_DISPLAY_HEIGHT) * PIXEL_SIZE;
+            int y = (i / EMULATOR_DISPLAY_WIDTH) * PIXEL_SIZE;
             SDL_Rect pixelRect = {x, y, PIXEL_SIZE, PIXEL_SIZE};
             SDL_RenderFillRect(renderer, &pixelRect);
 
@@ -37,6 +38,14 @@ void chip8Display::render(const std::array<bool, EMULATOR_DISPLAY_WIDTH * EMUlAT
 
     SDL_RenderPresent(renderer);
 
+}
+
+void chip8Display::clear(){
+    screenBuffer = {};
+}
+
+void chip8Display::setPixel(int x, int y){
+    screenBuffer[y * EMULATOR_DISPLAY_WIDTH + x] = true;
 }
 
 chip8Display::~chip8Display(){
