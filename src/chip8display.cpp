@@ -44,8 +44,12 @@ void chip8Display::clear(){
     screenBuffer = {};
 }
 
-void chip8Display::setPixel(int x, int y){
-    screenBuffer[y * EMULATOR_DISPLAY_WIDTH + x] = true;
+void chip8Display::setPixel(int x, int y, bool state){
+    screenBuffer[y * EMULATOR_DISPLAY_WIDTH + x] = state;
+}
+
+bool chip8Display::getPixel(int x, int y){
+    return screenBuffer[y * EMULATOR_DISPLAY_WIDTH + x];
 }
 
 chip8Display::~chip8Display(){

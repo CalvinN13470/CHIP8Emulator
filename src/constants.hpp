@@ -32,6 +32,9 @@ namespace chip8::constants{
     //Location in memory to add font data
     const std::size_t FONT_DATA_ENTRY_INDEX = 80;
 
+    //Location in memory to add ROM
+    const std::size_t ROM_DATA_ENTRY_INDEX = 512;
+
 }
 
 #endif

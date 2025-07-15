@@ -17,7 +17,8 @@ class chip8Display{
         chip8Display();
         void render();
         void clear();
-        void setPixel(int x, int y);
+        void setPixel(int x, int y, bool state);
+        bool getPixel(int x, int y);
         ~chip8Display();
 };
 

@@ -14,4 +14,8 @@
 /Makefile
 /*.a
 /*.txt
+/CHIP8exec
+/ROMs
+/debug
+/release
 !/CMakeLists.txt

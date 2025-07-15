@@ -5,6 +5,7 @@
 #include <array>
 #include <chrono>
 #include <cstdint>
+#include <fstream>
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <stack>

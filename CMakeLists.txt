@@ -8,6 +8,8 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+find_package(SDL2 REQUIRED)
+
 enable_testing()
 
 add_subdirectory(googletest)
@@ -26,6 +28,7 @@ set(Headers
 )
 
 set(Sources
+    src/main.cpp
     src/chip8context.cpp
     src/chip8display.cpp
     src/chip8keypad.cpp
@@ -36,5 +39,9 @@ set(Sources
 )
 
 add_library(${This} STATIC ${Sources} ${Headers})
+add_executable(CHIP8exec ${Sources} ${Headers})
+
+target_include_directories(CHIP8exec PRIVATE ${SDL2_INCLUDE_DIRS})
+target_link_libraries(CHIP8exec ${SDL2_LIBRARIES})
 
 add_subdirectory(chip8tests)

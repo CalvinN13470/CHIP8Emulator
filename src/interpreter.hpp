@@ -14,10 +14,10 @@ using namespace chip8;
 class interpreter{
 
     private:
-        chip8Context* context;
-        chip8Display* display;
-        chip8Timer* interpreterTimer;
-        chip8Keypad* keypad;
+        chip8Context* context = nullptr;
+        chip8Display* display = nullptr;
+        chip8Timer* interpreterTimer = nullptr;
+        chip8Keypad* keypad = nullptr;
         uint16_t fetch();
         instructValues decode(uint16_t instr);
         void execute(instructValues decodedInstr);
@@ -25,7 +25,8 @@ class interpreter{
     
     public:
         interpreter();
-        int start();
+        interpreter(char const* filename);
+        int run();
         ~interpreter();
 };
 
