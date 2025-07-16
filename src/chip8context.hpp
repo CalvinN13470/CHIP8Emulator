@@ -12,8 +12,8 @@ using namespace chip8;
 class chip8Context{
 
     public:
-        std::array<std::uint8_t, chip8::constants::MEM_SIZE> memory;
-        std::stack<std::uint16_t> stack;
+        std::array<uint8_t, chip8::constants::MEM_SIZE> memory;
+        std::stack<uint16_t> stack;
 
         std::array<uint8_t, constants::VAR_REGISTER_COUNT> varRegisters;
 
