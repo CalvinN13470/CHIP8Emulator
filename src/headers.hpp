@@ -5,8 +5,10 @@
 #include <array>
 #include <chrono>
 #include <cstdint>
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <map>
 #include <SDL2/SDL.h>
 #include <stack>
 

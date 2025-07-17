@@ -68,112 +68,209 @@ instructValues interpreter::decode(uint16_t instr){
 }
 
 void interpreter::execute(instructValues decodedInstr){
-    
+    int SUPERCHIP = 1;
+
     switch(decodedInstr.action){
 
         case 0x00:
-            if (decodedInstr.Y == 0xE){    
-                context->pc = context->stack.top();
-                context->stack.pop();
-            }
-            else{
-                display->clear();
+            {
+                if (decodedInstr.Y == 0xE){    
+                    context->pc = context->stack.top();
+                    context->stack.pop();
+                }
+                else{
+                    display->clear();
+                }
             }
             break;
         
         case 0x01:
-            context->pc = decodedInstr.NNN;
+            {
+                context->pc = decodedInstr.NNN;
+            }
             break;
-        
+
         case 0x03:
-            if (context->varRegisters[decodedInstr.X] == decodedInstr.NN){
-                context->pc = context->pc + 0x2;
+            {
+                if (context->varRegisters[decodedInstr.X] == decodedInstr.NN)
+                    context->pc += 0x2;
             }
             break;
 
         case 0x04:
-            if (context->varRegisters[decodedInstr.X] != decodedInstr.NN){
-                context->pc = context->pc + 0x2;
+            {
+                if (context->varRegisters[decodedInstr.X] != decodedInstr.NN)
+                    context->pc += 0x2;
             }
             break;
 
         case 0x05:
-            if (context->varRegisters[decodedInstr.X] == context->varRegisters[decodedInstr.Y]){
-                context->pc = context->pc + 0x2;
+            {
+                if (context->varRegisters[decodedInstr.X] == context->varRegisters[decodedInstr.Y])
+                    context->pc += 0x2;    
             }
             break;
 
         case 0x06:
-            context->varRegisters[decodedInstr.X] = decodedInstr.NN;
-            break;
-        
-        case 0x07:
-            context->varRegisters[decodedInstr.X] += decodedInstr.NN;
-            break;
-        
-        case 0x08:
-            switch(decodedInstr.N){
-                case 0x00:
-                    context->varRegisters[decodedInstr.X] = context->varRegisters[decodedInstr.Y];
-                    break;
-
-                case 0x01:
-                    context->varRegisters[decodedInstr.X] = context->varRegisters[decodedInstr.X] | context->varRegisters[decodedInstr.Y];
-                    break;
-
-                case 0x02:
-                    context->varRegisters[decodedInstr.X] = context->varRegisters[decodedInstr.X] & context->varRegisters[decodedInstr.Y];
-                    break;
-
-                case 0x03:
-                    context->varRegisters[decodedInstr.X] = context->varRegisters[decodedInstr.X] ^ context->varRegisters[decodedInstr.Y];
-                    break;
-
-                case 0x04:
-                    uint16_t sum = context->varRegisters[decodedInstr.X] + context->varRegisters[decodedInstr.Y];
-
-                    if (sum > 255)
-                        context->varRegisters[0xF] = 1;
-                    else
-                        context->varRegisters[0xF] = 0;
-                    
-                    context->varRegisters[decodedInstr.X] = 0xFF & sum;
-
-                case 0x05:
-                    if (context->varRegisters[decodedInstr.X] > context->varRegisters[decodedInstr.Y])
-                        context->varRegisters[0xF] = 1;
-                    else
-                        context->varRegisters[0xF] = 0;
-
-                    context->varRegisters[decodedInstr.X] -= context->varRegisters[decodedInstr.Y];
-
-                case 0x07:
-                    if (context->varRegisters[decodedInstr.Y] > context->varRegisters[decodedInstr.X])
-                        context->varRegisters[0xF] = 1;
-                    else
-                        context->varRegisters[0xF] = 0;
-
-                    context->varRegisters[decodedInstr.X] = context->varRegisters[decodedInstr.Y] - context->varRegisters[decodedInstr.X];
-                    
+            {
+                context->varRegisters[decodedInstr.X] = decodedInstr.NN;
             }
+            break;
+
+        case 0x07:
+            {
+                context->varRegisters[decodedInstr.X] += decodedInstr.NN;
+            }
+            break;
+
+        case 0x08:
+            {
+                switch(decodedInstr.N){
+                    case 0x00:
+                    {
+                        context->varRegisters[decodedInstr.X] = context->varRegisters[decodedInstr.Y];
+                    }   
+                    break;
+
+                    case 0x01:
+                    {    
+                        context->varRegisters[decodedInstr.X] = context->varRegisters[decodedInstr.X] | context->varRegisters[decodedInstr.Y];
+                    }    
+                    break;
+
+                    case 0x02:
+                    {
+                        context->varRegisters[decodedInstr.X] = context->varRegisters[decodedInstr.X] & context->varRegisters[decodedInstr.Y];
+                    }   
+                    break;
+
+                    case 0x03:
+                    {
+                        context->varRegisters[decodedInstr.X] = context->varRegisters[decodedInstr.X] ^ context->varRegisters[decodedInstr.Y];
+                    }
+                    break;
+
+                    case 0x04:
+                    {
+                        uint16_t sum = context->varRegisters[decodedInstr.X] + context->varRegisters[decodedInstr.Y];
+
+                        if (sum > 255)
+                            context->varRegisters[0xF] = 1;
+                        else
+                            context->varRegisters[0xF] = 0;
+                        
+                        context->varRegisters[decodedInstr.X] = 0xFF & sum;
+                    }
+                    break;
+
+                    case 0x05:
+                    {
+                        if (context->varRegisters[decodedInstr.X] > context->varRegisters[decodedInstr.Y])
+                            context->varRegisters[0xF] = 1;
+                        else
+                            context->varRegisters[0xF] = 0;
+
+                        context->varRegisters[decodedInstr.X] -= context->varRegisters[decodedInstr.Y];
+                    }
+                    break;
+
+                    case 0x06:
+                    {
+                        if (SUPERCHIP)
+                            context->varRegisters[decodedInstr.X] = context->varRegisters[decodedInstr.Y];
+                        
+                        context->varRegisters[0xF] = context->varRegisters[decodedInstr.X] & 0x1;
+                        context->varRegisters[decodedInstr.X] = context->varRegisters[decodedInstr.X] >> 1;
+                    }
+                    break;
+
+                    case 0x07:
+                    {
+                        if (context->varRegisters[decodedInstr.Y] > context->varRegisters[decodedInstr.X])
+                            context->varRegisters[0xF] = 1;
+                        else
+                            context->varRegisters[0xF] = 0;
+
+                        context->varRegisters[decodedInstr.X] = context->varRegisters[decodedInstr.Y] - context->varRegisters[decodedInstr.X];
+                    }
+                    break;
+
+                    case 0x08:
+                    {
+                        if (SUPERCHIP)
+                            context->varRegisters[decodedInstr.X] = context->varRegisters[decodedInstr.Y];
+                        
+                        context->varRegisters[0xF] = context->varRegisters[decodedInstr.X] >> 7;
+                        context->varRegisters[decodedInstr.X] = context->varRegisters[decodedInstr.X] << 1;  
+                    }
+                    break;  
+
+                }
+            }
+            break;
 
         case 0x09:
+        {
             if (context->varRegisters[decodedInstr.X] != context->varRegisters[decodedInstr.Y]){
                 context->pc = context->pc + 0x2;
             }
-            break;
+        }
+        break;
 
         case 0x0A:
+        {
             context->index = decodedInstr.NNN;
-            break;
+        }
+        break;
         
+        case 0x0B:
+        {
+            uint16_t dest = decodedInstr.NNN;
+            if (SUPERCHIP)
+                dest += context->varRegisters[decodedInstr.X];
+            else
+                dest += context->varRegisters[0x0];
+            
+            context->pc = dest;
+        }
+        break;
+            
+        case 0x0C:
+        {
+            uint16_t random = rand();
+            context->varRegisters[decodedInstr.X] = random & decodedInstr.NN;
+        }
+        break;
+
         case 0x0D:
+        {
             int x = context->varRegisters[decodedInstr.X];
             int y = context->varRegisters[decodedInstr.Y];
             int h = int(decodedInstr.N);
             context->varRegisters[0x0F] = 0x00;
             draw(x, y, h);
-            break;
+        }
+        break;
+
+        case 0x0E:
+        {
+            switch (decodedInstr.N){
+                case 0x01:
+                {
+                    if (keypad->getKeyPress() != keypad->keyMap[context->varRegisters[decodedInstr.X]])
+                        context->pc += 0x2;
+                }
+                break;
+
+                case 0x0E:
+                {
+                    if (keypad->getKeyPress() == keypad->keyMap[context->varRegisters[decodedInstr.X]])
+                        context->pc += 0x2;
+                }
+                break;
+            }
+        }
+        break;
 
     }
 
