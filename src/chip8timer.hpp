@@ -18,13 +18,13 @@ class chip8Timer{
 
         steady_clock::time_point lastTime;
         steady_clock::time_point currentTime;
+
+        void step();
         
     public:
         chip8Timer(size_t delta, size_t cycle);
-        int step();
-        bool addTime(const uint16_t addedTime);
-        uint8_t getTimeHex();
-        int getTimeInt();
+        void setTime(const uint8_t addedTime);
+        uint8_t getTime();
         bool isZero();
         ~chip8Timer();
 };

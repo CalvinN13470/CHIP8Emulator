@@ -7,6 +7,7 @@ namespace chip8{
 
     struct instructValues{
 
+        uint16_t instr = 0x0000;
         uint8_t action = 0x00;
         int X = 0;
         int Y = 0;

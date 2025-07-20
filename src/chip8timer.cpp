@@ -14,9 +14,8 @@ chip8Timer::chip8Timer(size_t delta, size_t cycle){
 
 }
 
-int chip8Timer::step(){
+void chip8Timer::step(){
     
-    bool step = false;
     currentTime = steady_clock::now();
     deltaTime = duration_cast<nanoseconds>(currentTime - lastTime).count();
 
@@ -31,29 +30,16 @@ int chip8Timer::step(){
         if (timer > 0)
             timer -= 1;
         accumulator -= cycleLength;
-        step = true;
     }
-
-    return step;
-
 }
 
-bool chip8Timer::addTime(const uint16_t addedTime){
-    if ((uint16_t)timer + addedTime > 0x00FF){
-        throw InvalidTimerValueException();
-        return false;
-    }
-
-    timer += addedTime;
-    return true;
+void chip8Timer::setTime(const uint8_t newTime){
+    timer = newTime;
 }
 
-uint8_t chip8Timer::getTimeHex(){
+uint8_t chip8Timer::getTime(){
+    step();
     return timer;
-}
-
-int chip8Timer::getTimeInt(){
-    return (int) timer;
 }
 
 bool chip8Timer::isZero(){

@@ -5,7 +5,6 @@ interpreter::interpreter(){
     context = new chip8Context();
     display = new chip8Display();
     keypad = new chip8Keypad(display);
-    interpreterTimer = new chip8Timer(constants::PROC_MAX_DELTA_TIME, constants::PROC_CYCLE_LENGTH);
 
 }
 
@@ -55,8 +54,8 @@ instructValues interpreter::decode(uint16_t instr){
 
     instructValues decodedInstr;
 
+    decodedInstr.instr = instr;
     decodedInstr.action = instr >> 12;
-    
     decodedInstr.X = int((instr & 0x0F00) >> 8);
     decodedInstr.Y = int((instr & 0x00F0) >> 4);
     decodedInstr.N = instr & 0x000F;
@@ -74,22 +73,26 @@ void interpreter::execute(instructValues decodedInstr){
 
         case 0x00:
             {
-                if (decodedInstr.Y == 0xE){    
+                //subroutine return
+                if (decodedInstr.NN == 0xE0){    
                     context->pc = context->stack.top();
                     context->stack.pop();
                 }
+                //clear screen
                 else{
                     display->clear();
                 }
             }
             break;
         
+        //jump
         case 0x01:
             {
                 context->pc = decodedInstr.NNN;
             }
             break;
 
+        //skip conditional
         case 0x03:
             {
                 if (context->varRegisters[decodedInstr.X] == decodedInstr.NN)
@@ -97,6 +100,7 @@ void interpreter::execute(instructValues decodedInstr){
             }
             break;
 
+        //skip conditional
         case 0x04:
             {
                 if (context->varRegisters[decodedInstr.X] != decodedInstr.NN)
@@ -104,6 +108,7 @@ void interpreter::execute(instructValues decodedInstr){
             }
             break;
 
+        //skip conditional
         case 0x05:
             {
                 if (context->varRegisters[decodedInstr.X] == context->varRegisters[decodedInstr.Y])
@@ -111,45 +116,54 @@ void interpreter::execute(instructValues decodedInstr){
             }
             break;
 
+        //set VX = NN
         case 0x06:
             {
                 context->varRegisters[decodedInstr.X] = decodedInstr.NN;
             }
             break;
 
+        //add NN to VX
         case 0x07:
             {
                 context->varRegisters[decodedInstr.X] += decodedInstr.NN;
             }
             break;
 
+        
         case 0x08:
             {
                 switch(decodedInstr.N){
+
+                    //set VX to VY
                     case 0x00:
                     {
                         context->varRegisters[decodedInstr.X] = context->varRegisters[decodedInstr.Y];
                     }   
                     break;
 
+                    //binary OR
                     case 0x01:
                     {    
                         context->varRegisters[decodedInstr.X] = context->varRegisters[decodedInstr.X] | context->varRegisters[decodedInstr.Y];
                     }    
                     break;
 
+                    //binary AND
                     case 0x02:
                     {
                         context->varRegisters[decodedInstr.X] = context->varRegisters[decodedInstr.X] & context->varRegisters[decodedInstr.Y];
                     }   
                     break;
 
+                    //binary XOR
                     case 0x03:
                     {
                         context->varRegisters[decodedInstr.X] = context->varRegisters[decodedInstr.X] ^ context->varRegisters[decodedInstr.Y];
                     }
                     break;
 
+                    //add VY to VX
                     case 0x04:
                     {
                         uint16_t sum = context->varRegisters[decodedInstr.X] + context->varRegisters[decodedInstr.Y];
@@ -163,6 +177,7 @@ void interpreter::execute(instructValues decodedInstr){
                     }
                     break;
 
+                    //subtract VX by VY
                     case 0x05:
                     {
                         if (context->varRegisters[decodedInstr.X] > context->varRegisters[decodedInstr.Y])
@@ -174,6 +189,7 @@ void interpreter::execute(instructValues decodedInstr){
                     }
                     break;
 
+                    //shift right
                     case 0x06:
                     {
                         if (SUPERCHIP)
@@ -184,6 +200,7 @@ void interpreter::execute(instructValues decodedInstr){
                     }
                     break;
 
+                    //subtract VY by VX
                     case 0x07:
                     {
                         if (context->varRegisters[decodedInstr.Y] > context->varRegisters[decodedInstr.X])
@@ -195,7 +212,8 @@ void interpreter::execute(instructValues decodedInstr){
                     }
                     break;
 
-                    case 0x08:
+                    //shift left
+                    case 0x0E:
                     {
                         if (SUPERCHIP)
                             context->varRegisters[decodedInstr.X] = context->varRegisters[decodedInstr.Y];
@@ -209,6 +227,7 @@ void interpreter::execute(instructValues decodedInstr){
             }
             break;
 
+        //skip conditional
         case 0x09:
         {
             if (context->varRegisters[decodedInstr.X] != context->varRegisters[decodedInstr.Y]){
@@ -217,12 +236,14 @@ void interpreter::execute(instructValues decodedInstr){
         }
         break;
 
+        //set index
         case 0x0A:
         {
             context->index = decodedInstr.NNN;
         }
         break;
         
+        //jump with offset
         case 0x0B:
         {
             uint16_t dest = decodedInstr.NNN;
@@ -234,7 +255,8 @@ void interpreter::execute(instructValues decodedInstr){
             context->pc = dest;
         }
         break;
-            
+        
+        //random num generator
         case 0x0C:
         {
             uint16_t random = rand();
@@ -242,6 +264,7 @@ void interpreter::execute(instructValues decodedInstr){
         }
         break;
 
+        //draw
         case 0x0D:
         {
             int x = context->varRegisters[decodedInstr.X];
@@ -255,6 +278,8 @@ void interpreter::execute(instructValues decodedInstr){
         case 0x0E:
         {
             switch (decodedInstr.N){
+
+                //skip if key press
                 case 0x01:
                 {
                     if (keypad->getKeyPress() != keypad->keyMap[context->varRegisters[decodedInstr.X]])
@@ -262,10 +287,50 @@ void interpreter::execute(instructValues decodedInstr){
                 }
                 break;
 
+                //skip if not key press
                 case 0x0E:
                 {
                     if (keypad->getKeyPress() == keypad->keyMap[context->varRegisters[decodedInstr.X]])
                         context->pc += 0x2;
+                }
+                break;
+            }
+        }
+        break;
+
+        case 0x0F:
+        {
+            switch (decodedInstr.instr & 0x00FF){
+
+                //set VX to delay timer
+                case 0x07:
+                {
+                    context->varRegisters[decodedInstr.X] = context->delayTimer->getTime();
+                }
+                break;
+
+                //set delay timer to vx
+                case 0x15:
+                {
+                    context->delayTimer->setTime(context->varRegisters[decodedInstr.X]);
+                }
+                break;
+
+                //set sound timer to vx
+                case 0x18:
+                {
+                    context->soundTimer->setTime(context->varRegisters[decodedInstr.X]);
+                }
+                break;
+
+                case 0x1E:
+                {
+                    /*
+                    add VX to index
+                    Some interpreters set VF to index "overflows" from 0FFF to above 1000.
+                    Not doing it in this case but may not be able to runs games like Spaceflight 2091.
+                    */
+                    context->index += context->varRegisters[decodedInstr.X];
                 }
                 break;
             }
