@@ -279,18 +279,18 @@ void interpreter::execute(instructValues decodedInstr){
         {
             switch (decodedInstr.N){
 
-                //skip if key press
+                //skip if not key press
                 case 0x01:
                 {
-                    if (keypad->getKeyPress() != keypad->keyMap[context->varRegisters[decodedInstr.X]])
+                    if (keypad->getKeyPress() != keypad->hexToKey[context->varRegisters[decodedInstr.X]])
                         context->pc += 0x2;
                 }
                 break;
 
-                //skip if not key press
+                //skip if key press
                 case 0x0E:
                 {
-                    if (keypad->getKeyPress() == keypad->keyMap[context->varRegisters[decodedInstr.X]])
+                    if (keypad->getKeyPress() == keypad->hexToKey[context->varRegisters[decodedInstr.X]])
                         context->pc += 0x2;
                 }
                 break;
@@ -331,6 +331,21 @@ void interpreter::execute(instructValues decodedInstr){
                     Not doing it in this case but may not be able to runs games like Spaceflight 2091.
                     */
                     context->index += context->varRegisters[decodedInstr.X];
+                }
+                break;
+
+                //wait for key press
+                case 0x0A:
+                {
+                    Sint32 key = 0;
+                    while (true){
+                        if (keypad->getKeyPress()){
+                            key = keypad->getKeyPress();
+                            break;
+                        }
+                    }
+                    context->varRegisters[decodedInstr.X] = keypad->keyToHex[key];
+                    context->pc += 2;
                 }
                 break;
             }

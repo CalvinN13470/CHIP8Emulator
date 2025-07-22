@@ -12,8 +12,9 @@ class chip8Keypad{
         //requires chip8Display instance
         chip8Keypad(chip8Display* display);
 
-        //holds keys 0-F mapped to buttons on keyboard
-        std::map<uint8_t, int> keyMap;
+        //maps to hold hex values corresponding to key inputs
+        std::map<uint8_t, Sint32> hexToKey;
+        std::map<Sint32, uint8_t> keyToHex;
 
         //returns SDLK value
         Sint32 getKeyPress();
