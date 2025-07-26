@@ -348,6 +348,24 @@ void interpreter::execute(instructValues decodedInstr){
                     context->pc += 2;
                 }
                 break;
+
+                //font character
+                case 0x29:
+                {
+                    context->index = constants::FONT_DATA_ENTRY_INDEX + (font::FONT_CHAR_SIZE * context->varRegisters[decodedInstr.X]);
+                }
+                break;
+
+                //binary-coded decimal conversion
+                case 0x33:
+                {
+                    int extractedValue = context->varRegisters[decodedInstr.X];
+                    context->memory[context->index] = extractedValue / 100;
+                    context->memory[context->index + 1] = (extractedValue % 100) / 10;
+                    context->memory[context->index + 2] = extractedValue % 10;
+                }
+                break;
+
             }
         }
         break;
