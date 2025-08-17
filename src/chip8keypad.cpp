@@ -1,6 +1,6 @@
 #include "chip8keypad.hpp"
 
-chip8Keypad::chip8Keypad(chip8Display* display){
+Chip8Keypad::Chip8Keypad(Chip8Display* display){
 
     if (!display)
         throw NullDisplayException();
@@ -51,7 +51,7 @@ chip8Keypad::chip8Keypad(chip8Display* display){
     };
 }
 
-Sint32 chip8Keypad::getKeyPress(){
+Sint32 Chip8Keypad::getKeyPress(){
     while (SDL_PollEvent(&event)){
         if (event.type == SDL_KEYDOWN)
             return event.key.keysym.sym;
@@ -60,4 +60,4 @@ Sint32 chip8Keypad::getKeyPress(){
     return false;
 }
 
-chip8Keypad::~chip8Keypad() = default;
+Chip8Keypad::~Chip8Keypad() = default;

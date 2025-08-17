@@ -1,6 +1,6 @@
 #include "chip8timer.hpp"
 
-chip8Timer::chip8Timer(size_t delta, size_t cycle){
+Chip8Timer::Chip8Timer(size_t delta, size_t cycle){
 
     timer = 0;
     deltaTime = 0;
@@ -14,7 +14,7 @@ chip8Timer::chip8Timer(size_t delta, size_t cycle){
 
 }
 
-void chip8Timer::step(){
+void Chip8Timer::step(){
     
     currentTime = steady_clock::now();
     deltaTime = duration_cast<nanoseconds>(currentTime - lastTime).count();
@@ -33,17 +33,21 @@ void chip8Timer::step(){
     }
 }
 
-void chip8Timer::setTime(const uint8_t newTime){
+void Chip8Timer::addTime(const uint8_t addedTime){
+    timer += addedTime;
+}
+
+void Chip8Timer::setTime(const uint8_t newTime){
     timer = newTime;
 }
 
-uint8_t chip8Timer::getTime(){
+uint8_t Chip8Timer::getTime(){
     step();
     return timer;
 }
 
-bool chip8Timer::isZero(){
+bool Chip8Timer::isZero(){
     return (timer == 0);
 }
 
-chip8Timer::~chip8Timer() = default;
+Chip8Timer::~Chip8Timer() = default;

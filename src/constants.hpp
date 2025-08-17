@@ -35,6 +35,10 @@ namespace chip8::constants{
     //Location in memory to add ROM
     const std::size_t ROM_DATA_ENTRY_INDEX = 512;
 
+    //bool values for enabling superchip behaviour
+    const bool ENABLE_SUPERCHIP = 1;
+    const bool DISABLE_SUPERCHIP = 0;
+
 }
 
 #endif

@@ -6,7 +6,7 @@
 
 using namespace chip8::constants;
 
-class chip8Display{
+class Chip8Display{
 
     private:
         SDL_Window* window = nullptr;
@@ -14,12 +14,12 @@ class chip8Display{
         std::array<bool, EMULATOR_DISPLAY_WIDTH * EMUlATOR_DISPLAY_HEIGHT> screenBuffer;
 
     public:
-        chip8Display();
+        Chip8Display();
         void render();
         void clear();
         void setPixel(int x, int y, bool state);
         bool getPixel(int x, int y);
-        ~chip8Display();
+        ~Chip8Display();
 };
 
 #endif

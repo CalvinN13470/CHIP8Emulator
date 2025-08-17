@@ -16,7 +16,7 @@ void test_timer_thread(int seconds, std::promise<void> exitSignal){
 
 TEST(timer_tests, check_add_time_exceptions){
 
-    chip8Timer testTimer(constants::DELAY_MAX_DELTA_TIME, constants::DELAY_CYCLE_LENGTH);
+    Chip8Timer testTimer(constants::DELAY_MAX_DELTA_TIME, constants::DELAY_CYCLE_LENGTH);
     EXPECT_THROW({
         try{
             testTimer.addTime(256);
@@ -62,14 +62,14 @@ TEST (timer__test, check_delay_timer_accuracy){
 
     std::thread asyncThread(test_timer_thread, 3, std::move(exitSignal));
 
-    chip8Timer testTimer(constants::DELAY_MAX_DELTA_TIME, constants::DELAY_CYCLE_LENGTH);
+    Chip8Timer testTimer(constants::DELAY_MAX_DELTA_TIME, constants::DELAY_CYCLE_LENGTH);
     testTimer.addTime(200);
 
     while (futureObj.wait_for(std::chrono::milliseconds(0)) != std::future_status::ready){
-        testTimer.step();
+        
     }
 
-    EXPECT_EQ(20, testTimer.getTimeInt());
+    EXPECT_EQ(20, testTimer.getTime());
 
     asyncThread.join();
     

@@ -8,7 +8,7 @@
 using namespace std::chrono;
 using namespace chip8::constants;
 
-class chip8Timer{
+class Chip8Timer{
     private:
         uint8_t timer;
         uint64_t deltaTime;
@@ -22,11 +22,12 @@ class chip8Timer{
         void step();
         
     public:
-        chip8Timer(size_t delta, size_t cycle);
-        void setTime(const uint8_t addedTime);
+        Chip8Timer(size_t delta, size_t cycle);
+        void addTime(const uint8_t addedTime);
+        void setTime(const uint8_t newTime);
         uint8_t getTime();
         bool isZero();
-        ~chip8Timer();
+        ~Chip8Timer();
 };
 
 #endif

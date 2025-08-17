@@ -1,15 +1,14 @@
 #include "interpreter.hpp"
 
-interpreter::interpreter(){
+Interpreter::Interpreter(){
 
-    context = new chip8Context();
-    display = new chip8Display();
-    keypad = new chip8Keypad(display);
+    context = new Chip8Context();
+    display = new Chip8Display();
+    keypad = new Chip8Keypad(display);
 
 }
 
-interpreter::interpreter(char const* filename){
-
+Interpreter::Interpreter(char const* filename, bool enableSuperchip){
 
     std::ifstream file(filename, std::ios::binary | std::ios::ate);
 
@@ -17,10 +16,10 @@ interpreter::interpreter(char const* filename){
         std::cerr << "Error: Could not open ROM file " << filename << std::endl;
     }
     else{
-        context = new chip8Context();
-        display = new chip8Display();
-        keypad = new chip8Keypad(display);
-        interpreterTimer = new chip8Timer(constants::PROC_MAX_DELTA_TIME, constants::PROC_CYCLE_LENGTH);
+        context = new Chip8Context();
+        display = new Chip8Display();
+        keypad = new Chip8Keypad(display);
+        interpreterTimer = new Chip8Timer(constants::PROC_MAX_DELTA_TIME, constants::PROC_CYCLE_LENGTH);
 
         long size = file.tellg();
         char* buffer = new char[size];
@@ -36,9 +35,11 @@ interpreter::interpreter(char const* filename){
         context->pc = ROM_DATA_ENTRY_INDEX;
     }
 
+    superchip = enableSuperchip;
+
 }
 
-uint16_t interpreter::fetch(){
+uint16_t Interpreter::fetch(){
 
     uint8_t instr1 = context->memory[int(context->pc)];
     uint8_t instr2 = context->memory[int(context->pc) + 1];
@@ -50,7 +51,7 @@ uint16_t interpreter::fetch(){
 
 }
 
-instructValues interpreter::decode(uint16_t instr){
+instructValues Interpreter::decode(uint16_t instr){
 
     instructValues decodedInstr;
 
@@ -66,15 +67,14 @@ instructValues interpreter::decode(uint16_t instr){
 
 }
 
-void interpreter::execute(instructValues decodedInstr){
-    int SUPERCHIP = 1;
+void Interpreter::execute(instructValues decodedInstr){
 
     switch(decodedInstr.action){
 
         case 0x00:
             {
                 //subroutine return
-                if (decodedInstr.NN == 0xE0){    
+                if (decodedInstr.NN == 0xEE){    
                     context->pc = context->stack.top();
                     context->stack.pop();
                 }
@@ -192,7 +192,7 @@ void interpreter::execute(instructValues decodedInstr){
                     //shift right
                     case 0x06:
                     {
-                        if (SUPERCHIP)
+                        if (superchip)
                             context->varRegisters[decodedInstr.X] = context->varRegisters[decodedInstr.Y];
                         
                         context->varRegisters[0xF] = context->varRegisters[decodedInstr.X] & 0x1;
@@ -215,7 +215,7 @@ void interpreter::execute(instructValues decodedInstr){
                     //shift left
                     case 0x0E:
                     {
-                        if (SUPERCHIP)
+                        if (superchip)
                             context->varRegisters[decodedInstr.X] = context->varRegisters[decodedInstr.Y];
                         
                         context->varRegisters[0xF] = context->varRegisters[decodedInstr.X] >> 7;
@@ -247,7 +247,7 @@ void interpreter::execute(instructValues decodedInstr){
         case 0x0B:
         {
             uint16_t dest = decodedInstr.NNN;
-            if (SUPERCHIP)
+            if (superchip)
                 dest += context->varRegisters[decodedInstr.X];
             else
                 dest += context->varRegisters[0x0];
@@ -327,7 +327,7 @@ void interpreter::execute(instructValues decodedInstr){
                 {
                     /*
                     add VX to index
-                    Some interpreters set VF to index "overflows" from 0FFF to above 1000.
+                    Some Interpreters set VF to index "overflows" from 0FFF to above 1000.
                     Not doing it in this case but may not be able to runs games like Spaceflight 2091.
                     */
                     context->index += context->varRegisters[decodedInstr.X];
@@ -366,6 +366,33 @@ void interpreter::execute(instructValues decodedInstr){
                 }
                 break;
 
+                //store in memory
+                case 0x55:
+                {
+                    uint16_t temp = context->index;
+                    for (int i = 0 ; i <= decodedInstr.X ; ++i){
+                        context->memory[context->index] = context->varRegisters[i];
+                        context->index += 1;
+                    }
+                    if (superchip){
+                        context->index = temp;
+                    }
+                }
+                break;
+
+                //load from memory
+                case 0x65:
+                {
+                    uint16_t temp = context->index;
+                    for (int i = 0 ; i <= decodedInstr.X ; ++i){
+                        context->varRegisters[i] = context->memory[context->index];
+                        context->index += 1;
+                    }
+                    if (superchip){
+                        context->index = temp;
+                    }
+                }
+                break;
             }
         }
         break;
@@ -374,13 +401,13 @@ void interpreter::execute(instructValues decodedInstr){
 
 }
 
-void interpreter::draw(int x, int y, int h){
+void Interpreter::draw(int x, int y, int h){
     x = x % constants::EMULATOR_DISPLAY_WIDTH;
     y = y % constants::EMUlATOR_DISPLAY_HEIGHT;
     int pX = x;
     int pY = y;
 
-    for (int i = 0 ; i < h ; i++){
+    for (int i = 0 ; i < h ; ++i){
 
         if (pY > constants::EMUlATOR_DISPLAY_HEIGHT)
             break;
@@ -413,22 +440,24 @@ void interpreter::draw(int x, int y, int h){
 
 }
 
-int interpreter::run(){
+int Interpreter::run(){
 
     if (context == nullptr){
-        std::cerr << "Interpreter not properly initialized" << std::endl;
+        std::cerr << "Could not run. Interpreter not properly initialized" << std::endl;
         return -1;
     }
     else{
-        while(true){
-            uint16_t curInstruction = fetch();
-            instructValues values = decode(curInstruction);
-            execute(values);
+        while(keypad->getKeyPress() != SDLK_ESCAPE){
+            uint16_t encodedInstruction = fetch();
+            instructValues decodedInstruction = decode(encodedInstruction);
+            execute(decodedInstruction);
         }
     }
+    return 1;
+    
 }
 
-interpreter::~interpreter(){
+Interpreter::~Interpreter(){
 
     delete context;
     delete display;

@@ -5,12 +5,12 @@
 #include "chip8display.hpp"
 #include "exceptions/null_display_exception.hpp"
 
-class chip8Keypad{
+class Chip8Keypad{
     private:
         SDL_Event event;
     public:
         //requires chip8Display instance
-        chip8Keypad(chip8Display* display);
+        Chip8Keypad(Chip8Display* display);
 
         //maps to hold hex values corresponding to key inputs
         std::map<uint8_t, Sint32> hexToKey;
@@ -18,7 +18,7 @@ class chip8Keypad{
 
         //returns SDLK value
         Sint32 getKeyPress();
-        ~chip8Keypad();
+        ~Chip8Keypad();
 };
 
 #endif

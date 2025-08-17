@@ -11,23 +11,24 @@
 using namespace std;
 using namespace chip8;
 
-class interpreter{
+class Interpreter{
 
     private:
-        chip8Context* context = nullptr;
-        chip8Display* display = nullptr;
-        chip8Timer* interpreterTimer = nullptr;
-        chip8Keypad* keypad = nullptr;
+        Chip8Context* context = nullptr;
+        Chip8Display* display = nullptr;
+        Chip8Timer* interpreterTimer = nullptr;
+        Chip8Keypad* keypad = nullptr;
+        int superchip;
         uint16_t fetch();
         instructValues decode(uint16_t instr);
         void execute(instructValues decodedInstr);
         void draw(int x, int y, int h);
     
     public:
-        interpreter();
-        interpreter(char const* filename);
+        Interpreter();
+        Interpreter(char const* filename, bool enableSuperchip);
         int run();
-        ~interpreter();
+        ~Interpreter();
 };
 
 #endif

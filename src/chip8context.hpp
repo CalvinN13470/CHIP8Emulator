@@ -9,7 +9,7 @@
 
 using namespace chip8;
 
-class chip8Context{
+class Chip8Context{
 
     public:
         std::array<uint8_t, chip8::constants::MEM_SIZE> memory;
@@ -20,11 +20,11 @@ class chip8Context{
         uint16_t pc;
         uint16_t index;
 
-        chip8Timer* delayTimer;
-        chip8Timer* soundTimer;
+        Chip8Timer* delayTimer;
+        Chip8Timer* soundTimer;
 
-        chip8Context();
-        ~chip8Context();
+        Chip8Context();
+        ~Chip8Context();
     
 };
 

@@ -1,6 +1,6 @@
 #include "chip8display.hpp"
 
-chip8Display::chip8Display(){
+Chip8Display::Chip8Display(){
 
     window = SDL_CreateWindow("Calvin's CHIP8 Emulator", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_DISPLAY_WIDTH, WINDOW_DISPLAY_HEIGHT, 0);
     if (window == nullptr)
@@ -16,14 +16,14 @@ chip8Display::chip8Display(){
     
 }
 
-void chip8Display::render(){
+void Chip8Display::render(){
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
-    for (int i = 0 ; i < EMULATOR_DISPLAY_WIDTH * EMUlATOR_DISPLAY_HEIGHT ; i++){
+    for (int i = 0 ; i < EMULATOR_DISPLAY_WIDTH * EMUlATOR_DISPLAY_HEIGHT ; ++i){
 
         if (screenBuffer[i] != false){
 
@@ -40,19 +40,19 @@ void chip8Display::render(){
 
 }
 
-void chip8Display::clear(){
+void Chip8Display::clear(){
     screenBuffer = {};
 }
 
-void chip8Display::setPixel(int x, int y, bool state){
+void Chip8Display::setPixel(int x, int y, bool state){
     screenBuffer[y * EMULATOR_DISPLAY_WIDTH + x] = state;
 }
 
-bool chip8Display::getPixel(int x, int y){
+bool Chip8Display::getPixel(int x, int y){
     return screenBuffer[y * EMULATOR_DISPLAY_WIDTH + x];
 }
 
-chip8Display::~chip8Display(){
+Chip8Display::~Chip8Display(){
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
