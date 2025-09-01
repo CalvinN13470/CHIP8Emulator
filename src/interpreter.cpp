@@ -352,13 +352,11 @@ void Interpreter::execute(instructValues decodedInstr){
                 //wait for key press
                 case 0x0A:
                 {
-                    uint8_t key;
-                    while (true){
-                        if (keypad->getKeyPress() != NO_KEY){
-                            key = keypad->getKeyPress();
-                            break;
-                        }
+                    uint8_t key = NO_KEY;
+                    while (key != NO_KEY){
+                        key = keypad->getKeyPress();
                     }
+
                     context->varRegisters[decodedInstr.X] = key;
                     context->pc += 2;
                 }
@@ -466,7 +464,6 @@ int Interpreter::run(){
             uint16_t encodedInstruction = fetch();
             instructValues decodedInstruction = decode(encodedInstruction);
             execute(decodedInstruction);
-            cerr << "key: " << (int)keypad->getKeyPress() << endl;
 
         }
     }
