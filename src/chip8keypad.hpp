@@ -17,7 +17,7 @@ class Chip8Keypad{
         std::map<Sint32, uint8_t> keyToHex;
 
         //returns SDLK value
-        Sint32 getKeyPress();
+        uint8_t getKeyPress();
         ~Chip8Keypad();
 };
 

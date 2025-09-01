@@ -39,6 +39,9 @@ namespace chip8::constants{
     const bool ENABLE_SUPERCHIP = 1;
     const bool DISABLE_SUPERCHIP = 0;
 
+    //Arbitrary value to represent no key pressed
+    const uint8_t NO_KEY = 255;
+
 }
 
 #endif

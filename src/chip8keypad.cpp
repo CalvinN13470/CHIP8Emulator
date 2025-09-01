@@ -51,13 +51,20 @@ Chip8Keypad::Chip8Keypad(Chip8Display* display){
     };
 }
 
-Sint32 Chip8Keypad::getKeyPress(){
+uint8_t Chip8Keypad::getKeyPress(){
     while (SDL_PollEvent(&event)){
-        if (event.type == SDL_KEYDOWN)
-            return event.key.keysym.sym;
-        
+        if (event.type != SDL_KEYDOWN){
+          continue;
+        }
+
+        int key = event.key.keysym.sym;
+        if  (keyToHex.find(key) != keyToHex.end()){
+          return keyToHex[key];
+        }            
     }
-    return false;
+
+    //arbitrary value for no key pressed
+    return NO_KEY;
 }
 
 Chip8Keypad::~Chip8Keypad() = default;

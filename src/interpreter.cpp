@@ -92,6 +92,13 @@ void Interpreter::execute(instructValues decodedInstr){
             }
             break;
 
+        //subroutine call
+        case 0x02:
+            {
+                context->stack.push(context->pc);
+                context->pc = decodedInstr.NNN;
+            }
+
         //skip conditional
         case 0x03:
             {
@@ -167,25 +174,27 @@ void Interpreter::execute(instructValues decodedInstr){
                     case 0x04:
                     {
                         uint16_t sum = context->varRegisters[decodedInstr.X] + context->varRegisters[decodedInstr.Y];
+                        context->varRegisters[decodedInstr.X] = 0xFF & sum;
 
                         if (sum > 255)
                             context->varRegisters[0xF] = 1;
                         else
                             context->varRegisters[0xF] = 0;
                         
-                        context->varRegisters[decodedInstr.X] = 0xFF & sum;
                     }
                     break;
 
                     //subtract VX by VY
                     case 0x05:
                     {
+                        int flag;
                         if (context->varRegisters[decodedInstr.X] > context->varRegisters[decodedInstr.Y])
-                            context->varRegisters[0xF] = 1;
+                            flag = 1;
                         else
-                            context->varRegisters[0xF] = 0;
+                            flag = 0;
 
                         context->varRegisters[decodedInstr.X] -= context->varRegisters[decodedInstr.Y];
+                        context->varRegisters[0xF] = flag;
                     }
                     break;
 
@@ -195,20 +204,24 @@ void Interpreter::execute(instructValues decodedInstr){
                         if (superchip)
                             context->varRegisters[decodedInstr.X] = context->varRegisters[decodedInstr.Y];
                         
-                        context->varRegisters[0xF] = context->varRegisters[decodedInstr.X] & 0x1;
+                        int flag;
+                        flag = context->varRegisters[decodedInstr.X] & 0x1;
                         context->varRegisters[decodedInstr.X] = context->varRegisters[decodedInstr.X] >> 1;
+                        context->varRegisters[0xF] = flag;
                     }
                     break;
 
                     //subtract VY by VX
                     case 0x07:
                     {
+                        int flag;
                         if (context->varRegisters[decodedInstr.Y] > context->varRegisters[decodedInstr.X])
-                            context->varRegisters[0xF] = 1;
+                            flag = 1;
                         else
-                            context->varRegisters[0xF] = 0;
+                            flag = 0;
 
                         context->varRegisters[decodedInstr.X] = context->varRegisters[decodedInstr.Y] - context->varRegisters[decodedInstr.X];
+                        context->varRegisters[0xF] = flag;
                     }
                     break;
 
@@ -217,9 +230,11 @@ void Interpreter::execute(instructValues decodedInstr){
                     {
                         if (superchip)
                             context->varRegisters[decodedInstr.X] = context->varRegisters[decodedInstr.Y];
-                        
-                        context->varRegisters[0xF] = context->varRegisters[decodedInstr.X] >> 7;
-                        context->varRegisters[decodedInstr.X] = context->varRegisters[decodedInstr.X] << 1;  
+
+                        int flag;
+                        flag = context->varRegisters[decodedInstr.X] >> 7;
+                        context->varRegisters[decodedInstr.X] = context->varRegisters[decodedInstr.X] << 1;
+                        context->varRegisters[0xF] = flag; 
                     }
                     break;  
 
@@ -282,7 +297,7 @@ void Interpreter::execute(instructValues decodedInstr){
                 //skip if not key press
                 case 0x01:
                 {
-                    if (keypad->getKeyPress() != keypad->hexToKey[context->varRegisters[decodedInstr.X]])
+                    if (keypad->getKeyPress() != context->varRegisters[decodedInstr.X])
                         context->pc += 0x2;
                 }
                 break;
@@ -290,7 +305,7 @@ void Interpreter::execute(instructValues decodedInstr){
                 //skip if key press
                 case 0x0E:
                 {
-                    if (keypad->getKeyPress() == keypad->hexToKey[context->varRegisters[decodedInstr.X]])
+                    if (keypad->getKeyPress() == context->varRegisters[decodedInstr.X])
                         context->pc += 0x2;
                 }
                 break;
@@ -337,14 +352,14 @@ void Interpreter::execute(instructValues decodedInstr){
                 //wait for key press
                 case 0x0A:
                 {
-                    Sint32 key = 0;
+                    uint8_t key;
                     while (true){
-                        if (keypad->getKeyPress()){
+                        if (keypad->getKeyPress() != NO_KEY){
                             key = keypad->getKeyPress();
                             break;
                         }
                     }
-                    context->varRegisters[decodedInstr.X] = keypad->keyToHex[key];
+                    context->varRegisters[decodedInstr.X] = key;
                     context->pc += 2;
                 }
                 break;
@@ -451,6 +466,8 @@ int Interpreter::run(){
             uint16_t encodedInstruction = fetch();
             instructValues decodedInstruction = decode(encodedInstruction);
             execute(decodedInstruction);
+            cerr << "key: " << (int)keypad->getKeyPress() << endl;
+
         }
     }
     return 1;
